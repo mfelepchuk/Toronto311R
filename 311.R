@@ -44,8 +44,8 @@ data <- data %>% mutate(Ward = map_ward)%>%
 #DPLYR summaries
 by_year_ward <- data %>% group_by(Ward,Year) %>% summarise(calls = n()) %>% arrange(desc(calls))
 
-by_ward <- data %>% group_by(Ward, Service) %>% summarise(calls = n()) %>% arrange(desc(calls))
-
+by_ward <- data %>% group_by(Ward, Division) %>% summarise(calls = n()) %>% arrange(desc(calls)) %>% 
+  filter(Ward != "Unknown", Division !="Unknown" )
 
 by_FSA <- data %>% filter(FSA != "Intersection") %>% group_by(FSA, Ward, Division, Service) %>% summarise(calls = n()) %>% arrange(desc(calls))
 
@@ -69,3 +69,6 @@ ggplot(wildlife, aes(y=calls,x=reorder(Ward,-calls))) + geom_bar(stat='identity'
   ggtitle("Number of Wildlife Cadaver Calls, by Ward") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) + xlab('Ward') + theme(legend.position="none")
   
+ggplot(by_ward, aes(y=calls,x=reorder(Ward,-calls))) + geom_bar(stat='identity', aes(fill=Division)) + 
+  ggtitle("Calls by Division and Ward") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) + xlab('Ward') + theme(legend.position="bottom")
